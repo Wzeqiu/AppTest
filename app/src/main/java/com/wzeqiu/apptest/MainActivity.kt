@@ -1,12 +1,14 @@
 package com.wzeqiu.apptest
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
+import com.wzeqiu.apptest.base.BaseActivity
+import com.wzeqiu.apptest.base.BasePresenter
 
-class MainActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+class MainActivity : BaseActivity<BasePresenter<*>>() {
+
+    override fun getLayoutId() = R.layout.activity_main
+
+
+    override fun init() {
     }
 }
