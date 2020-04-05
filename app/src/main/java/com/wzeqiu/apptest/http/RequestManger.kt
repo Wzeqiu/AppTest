@@ -22,7 +22,7 @@ class RequestManger {
     }
 
     private val fileSize: Long = 1024 * 1024 * 10
-    private val cache: Cache = Cache(File(""), fileSize)
+//    private val cache: Cache = Cache(File(""), fileSize)
 
     private val okHttpClient: OkHttpClient = OkHttpClient()
         .newBuilder()
