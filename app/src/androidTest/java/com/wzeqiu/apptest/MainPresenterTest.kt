@@ -1,13 +1,15 @@
 package com.wzeqiu.apptest
 
+import com.wzeqiu.apptest.bean.QuarterBean
 import com.wzeqiu.apptest.http.RequestManger
 import com.wzeqiu.apptest.http.ResponseCallback
 import com.wzeqiu.apptest.http.bean.HistoryBean
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
+import java.util.*
 import java.util.concurrent.CountDownLatch
-
 class MainPresenterTest {
 
     var mainPresenter = MainPresenter(null)
@@ -31,12 +33,39 @@ class MainPresenterTest {
             )
             , object : ResponseCallback<HistoryBean> {
                 override fun success(data: HistoryBean) {
-                    println("test success>>>" + data)
+                    var hashMap = TreeMap<String, QuarterBean>()
+                    data.records?.forEach {
+                        var key = it.quarter!!.split("-")
+                        var quarterBean = hashMap.get(key[0])
+                        if (quarterBean == null) {
+                            quarterBean = QuarterBean()
+                        }
+                        when (key[1]) {
+                            "Q1" -> quarterBean.Q1 = BigDecimal(it.volume_of_mobile_data)
+                            "Q2" -> quarterBean.Q2 = BigDecimal(it.volume_of_mobile_data)
+                            "Q3" -> quarterBean.Q3 = BigDecimal(it.volume_of_mobile_data)
+                            "Q4" -> quarterBean.Q4 = BigDecimal(it.volume_of_mobile_data)
+                        }
+                        quarterBean.total =
+                            quarterBean.total.add(BigDecimal(it.volume_of_mobile_data))
+
+                        quarterBean.decline = quarterBean.Q1 > quarterBean.Q2 ||
+                                quarterBean.Q1 > quarterBean.Q3 ||
+                                quarterBean.Q1 > quarterBean.Q4 ||
+                                quarterBean.Q2 > quarterBean.Q3 ||
+                                quarterBean.Q2 > quarterBean.Q4 ||
+                                quarterBean.Q3 > quarterBean.Q4
+
+                        hashMap.put(key[0], quarterBean)
+                    }
+
+
+                    println("load success>>>" + hashMap)
                     countDownLatch.countDown()
                 }
 
                 override fun fail(msg: String) {
-                    println("test fail>>>" + msg)
+                    println("load fail>>>" + msg)
                     countDownLatch.countDown()
                 }
 

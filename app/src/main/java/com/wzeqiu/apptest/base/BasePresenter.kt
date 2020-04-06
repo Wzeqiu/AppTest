@@ -43,7 +43,6 @@ open class BasePresenter<T>(protected var callback: T?) : LifecycleObserver {
 
             })
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSubscriber<T>() {
                     override fun onComplete() {
                         println("onComplete")
